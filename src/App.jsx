@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Cards from "./components/Cards";
 import { randomSelection } from "./utils";
+import Score from "./components/Score";
 
 const totalPokemon = 20;
 const onScreen = 10;
@@ -19,7 +20,7 @@ function fetchPokemonList() {
 function App() {
   const [pokemonList, setPokemonList] = useState([]);
   const [chosen, setChosen] = useState(new Set());
-  const [bestScore, setBestScore] = useState(0);
+  const [highScore, sethighScore] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
 
   console.log("Render");
@@ -33,10 +34,18 @@ function App() {
       const newChosen = new Set(chosen);
       newChosen.add(id);
       setChosen(newChosen);
-      if (newChosen.size > bestScore) {
-        setBestScore(newChosen.size);
+      if (newChosen.size > highScore) {
+        sethighScore(newChosen.size);
       }
     }
+  }
+
+  function selectPokemon() {
+    const selection = [];
+    for (const index of randomSelection(0, totalPokemon - 1, onScreen)) {
+      selection.push(pokemonList[index]);
+    }
+    return selection;
   }
 
   useEffect(() => {
@@ -56,24 +65,24 @@ function App() {
     }
   }, [pokemonList]);
 
-  if (errorMessage) {
-    return <p className="error">{errorMessage}</p>;
-  } else if (pokemonList.length) {
-    const screenPokemon = [];
-    for (const index of randomSelection(0, totalPokemon - 1, onScreen)) {
-      screenPokemon.push(pokemonList[index]);
-    }
-    return (
-      <>
-        <p>
-          Score: {chosen.size}, Best Score: {bestScore}
-        </p>
-        <Cards pokemonList={screenPokemon} onCardClick={onCardClick} />
-      </>
-    );
-  } else {
-    return <p>Loading...</p>;
-  }
+  return (
+    <>
+      <Score score={chosen.size} highScore={highScore} />
+      {errorMessage ? (
+        <p className="error">{errorMessage}</p>
+      ) : pokemonList.length ? (
+        <>
+          <p>
+            Choose a Pokemon to increase your score. The game ends if you choose
+            the same Pokemon twice!
+          </p>
+          <Cards onCardClick={onCardClick} pokemonList={selectPokemon()} />
+        </>
+      ) : (
+        <p>Loading...</p>
+      )}
+    </>
+  );
 }
 
 export default App;
