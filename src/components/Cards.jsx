@@ -1,14 +1,11 @@
+import "./cards.css";
 import Card from "./Card";
 
-function Cards({ pokemonList }) {
+function Cards({ pokemonList, onCardClick }) {
   return (
     <div className="cards">
       {pokemonList.map((pokemon) => (
-        <Card
-          key={pokemon.id}
-          name={pokemon.name}
-          image={pokemon.sprites.front_default}
-        />
+        <Card key={pokemon.id} pokemon={pokemon} onClick={onCardClick} />
       ))}
     </div>
   );

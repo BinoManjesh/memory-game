@@ -1,0 +1,11 @@
+div.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0px 0px 5px gray;
+}
+
+div.card > img {
+  image-rendering: pixelated;
+  height: 200px;
+}
